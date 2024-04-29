@@ -5,3 +5,8 @@ type PlayerChunk struct {
 	DateTime string `json:"dateTime"`
 	Score    int    `json:"score"`
 }
+
+type UserInfoChunk struct {
+	User_ID       string `json:"user_id"`
+	User_Password string `json:"user_password"`
+}
