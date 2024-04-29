@@ -1,6 +1,7 @@
 package packages
 
 import (
+	"database/sql"
 	"encoding/json"
 	"io"
 	"log"
@@ -39,6 +40,11 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	_, err = db.Exec(query, chunk.User_ID, hased)
 	if err != nil {
 		log.Println("Failed to insert row:", err)
+		return
+	}
+
+	if err = mkMMRRow(db, chunk.User_ID); err != nil {
+		log.Println(err)
 		return
 	}
 
@@ -91,4 +97,10 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println(chunk.User_ID, "Sign In Failed.")
 	w.WriteHeader(http.StatusNotFound)
 	return
+}
+
+func mkMMRRow(db *sql.DB, uid string) error {
+	query := "INSERT INTO mmr VALUES(?, 100, 0, 0)"
+	_, err := db.Exec(query, uid)
+	return err
 }

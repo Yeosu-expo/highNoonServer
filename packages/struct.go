@@ -6,6 +6,11 @@ type PlayerChunk struct {
 	Score    int    `json:"score"`
 }
 
+type UserInfoChunk struct {
+	User_ID       string `json:"user_id"`
+	User_Password string `json:"user_password"`
+}
+
 type MatchInfo struct {
 	uid     string
 	mmr     int
