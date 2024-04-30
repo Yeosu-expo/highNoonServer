@@ -163,6 +163,8 @@ func GetRankHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
+
+	log.Println(ranks)
 }
 
 // 고루틴으로 실행되며

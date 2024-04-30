@@ -24,7 +24,7 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db := getDB(DB + "logindb")
+	db := getDB(DB + "highnoon")
 	if db == nil {
 		return
 	}

@@ -43,7 +43,7 @@ func main() {
 		pack.GetRankHandler(w, r)
 	})
 
-	if err := http.ListenAndServe(":6000", router); err != nil {
+	if err := http.ListenAndServe("210.125.31.150:6000", router); err != nil {
 		log.Println("failed to open server:", err)
 		return
 	}
