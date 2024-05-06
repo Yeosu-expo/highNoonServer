@@ -43,7 +43,10 @@ func main() {
 		pack.GetRankHandler(w, r)
 	})
 
-	if err := http.ListenAndServe("210.125.31.150:6000", router); err != nil {
+	router.HandleFunc("/insertChost", pack.InsertChostHandler).Methods("POST")
+	router.HandleFunc("/getChost", pack.GetChostHandler).Methods("GET")
+
+	if err := http.ListenAndServe(":6000", router); err != nil {
 		log.Println("failed to open server:", err)
 		return
 	}

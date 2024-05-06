@@ -25,3 +25,19 @@ type RankInfo struct {
 	UID string `json:"uid"`
 	MMR int    `json:"mmr"`
 }
+
+type ChostData struct {
+	UID      string    `json:"uid"`
+	Accuracy float32   `json:"accuracy"`
+	Form     []int     `json:"form"`
+	Timing   []float32 `json:"timing"`
+	Index    int       `json:"index"`
+}
+
+type FormType struct {
+	Form []int `json:"form"`
+}
+
+type TimingType struct {
+	Timing []float32 `json:"timing"`
+}
