@@ -6,11 +6,13 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 func InsertChostHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("INSERT CHOST.")
 	data, err := io.ReadAll(r.Body)
 	if err != nil {
 		log.Println(err)
@@ -48,6 +50,23 @@ func GetChostHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("------------------------")
 }
 
+func GetChostRegardAccuracyHandler(w http.ResponseWriter, r *http.Request) {
+	accuracy := r.URL.Query().Get("accuracy")
+	chost := getChostDataRegardAccuracy(accuracy)
+
+	w.Header().Set("Content-Type", "application/json")
+	err := json.NewEncoder(w).Encode(chost)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	log.Println("--------GET CHOST-------")
+	log.Println("ACCURACY =", accuracy)
+	log.Println(chost)
+	log.Println("------------------------")
+}
+
 func insertChostData(chost ChostData) error {
 	db := getDB(DB + "highnoon")
 	defer db.Close()
@@ -80,6 +99,56 @@ func getChostData(uid string) ChostData {
 
 	query := "select * from chost where uid=(?)"
 	rows, err := db.Query(query, uid)
+	if err != nil {
+		log.Println(err)
+		return ChostData{}
+	}
+
+	var data []ChostData
+	for rows.Next() {
+		var chost ChostData
+		var form []byte
+		var timing []byte
+		if err := rows.Scan(&chost.UID, &chost.Accuracy, &form, &timing, &chost.Index); err != nil {
+			log.Println(err)
+			return ChostData{}
+		}
+
+		var formtype FormType
+		if err := json.Unmarshal(form, &formtype); err != nil {
+			log.Println(err)
+			return ChostData{}
+		}
+
+		var timingtype TimingType
+		if err := json.Unmarshal(timing, &timingtype); err != nil {
+			log.Println(err)
+			return ChostData{}
+		}
+
+		chost.Form = formtype.Form
+		chost.Timing = timingtype.Timing
+
+		data = append(data, chost)
+	}
+
+	index := rand.Intn(len(data))
+
+	return data[index]
+}
+
+func getChostDataRegardAccuracy(tmp string) ChostData {
+	db := getDB(DB + "highnoon")
+	defer db.Close()
+	acc, err := strconv.ParseFloat(tmp, 64)
+	if err != nil {
+		log.Println(err)
+		return ChostData{}
+	}
+	accuracy := float32(acc)
+
+	query := "select * from chost where accuracy >= (?)"
+	rows, err := db.Query(query, accuracy)
 	if err != nil {
 		log.Println(err)
 		return ChostData{}

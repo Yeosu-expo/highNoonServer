@@ -24,6 +24,7 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	log.Println(chunk)
 	db := getDB(DB + "highnoon")
 	if db == nil {
 		return
@@ -65,7 +66,7 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	db := getDB(DB + "logindb")
+	db := getDB(DB + "highnoon")
 	if db == nil {
 		return
 	}
@@ -85,6 +86,7 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 			log.Println(err)
 			return
 		}
+		log.Println(user_password)
 
 		res := bcrypt.CompareHashAndPassword([]byte(user_password), []byte(chunk.User_Password))
 		if res == nil {
